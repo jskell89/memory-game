@@ -1,7 +1,53 @@
-.grid{
+body {
+    background-color: antiquewhite;
+}
+
+.grid {
     display: flex;
     flex-wrap: wrap;
     height: 300px;
     width: 400px;
+    position: absolute;
+    top: 25%;
+    left: 30%;
 }
 
+#message {
+    position: relative;
+    top: 550px;
+    left: 675px
+}
+
+table {
+    position: absolute;
+    left: 37.5%;
+}
+
+#table2 {
+    position: absolute;
+    left: 39%;
+    bottom: 200px
+}
+
+table,
+th,
+td {
+    border: solid 1px;
+    border-color: gray;
+}
+
+#score{
+    text-align: center;
+}
+
+tr{
+    text-align: center;
+}
+
+#result {
+    color: green;
+}
+
+#result2 {
+    color: red;
+}

@@ -58,12 +58,16 @@ const buzzer = new Audio('sounds/Wheel-of-Fortune-Buzzer.mp3')
 const cheering = new Audio('sounds/Crowd-Cheering-Sound-Effect.mp3')
 const booing = new Audio('sounds/boo.wav')
 const grid = document.querySelector('.grid')
+const message = document.querySelector('#message')
 const resultDisplay = document.querySelector('#result')
 const resultDisplayTwo = document.querySelector('#result2')
+const scoreTable = document.querySelector('#table2')
 var cardsChosen = []
 var cardsChosenId = []
 var cardsWon = []
 var cardsLost = []
+var scores = []
+
 
 //create game board
 function createBoard() {
@@ -79,7 +83,7 @@ function createBoard() {
     }
 }
 
-//check for matches
+//check for matches and determine win or loss
 function checkForMatch() {
     var cards = document.querySelectorAll('img')
     const optionOneId = cardsChosenId[0]
@@ -104,14 +108,20 @@ function checkForMatch() {
     resultDisplay.textContent = cardsWon.length
     resultDisplayTwo.textContent = cardsLost.length
     if (cardsWon.length === cardArray.length / 2) {
-        resultDisplay.textContent = 'Congratulations! All matches found!'
+        message.style.left = '525px'
+        message.style.color = 'green'
+        message.textContent = 'Congratulations! All matches found!'
         cheering.play()
-        setTimeout(resetBoard, 2000)
+        setTimeout(resetBoard, 3000)
+        scores.push(cardsWon.length + cardsLost.length)
+        recordScore()
     }
-    if (cardsLost.length === 8) {
-        resultDisplayTwo.textContent = 'Game Over!'
+    if (cardsLost.length === 20) {
+        message.style.left = '675px'
+        message.style.color = 'red'
+        message.textContent = 'Game Over!'
         booing.play()
-        setTimeout(resetBoard, 2000)
+        setTimeout(resetBoard, 3000)
     }
 }
 
@@ -127,20 +137,32 @@ function flipCard() {
         setTimeout(checkForMatch, 500)
     }
 }
-
+//starts game over
 function resetBoard() {
-   
-    for(let i=0; i < 12; i++){
-    grid.removeChild(document.getElementById(i)) 
-    }
 
+    for (let i = 0; i < 12; i++) {
+        grid.removeChild(document.getElementById(i))
+    }
     cardArray.sort(() => 0.5 - Math.random())
     createBoard()
-
+    message.textContent = " "
+    resultDisplay.textContent = " "
+    resultDisplayTwo.textContent = " "
     cardsChosen = []
     cardsChosenId = []
     cardsWon = []
     cardsLost = []
+}
+
+function recordScore() {
+
+    var tableRow = document.createElement('tr')
+    var tableData = document.createElement('td')
+    tableData.innerText = cardsWon.length + cardsLost.length
+    tableRow.appendChild(tableData)
+    scoreTable.appendChild(tableRow)
+
+
 }
 
 createBoard()
