@@ -57,6 +57,7 @@ const foundMatchAudio = new Audio('sounds/anime-wow-sound-effect.mp3')
 const buzzer = new Audio('sounds/Wheel-of-Fortune-Buzzer.mp3')
 const cheering = new Audio('sounds/Crowd-Cheering-Sound-Effect.mp3')
 const booing = new Audio('sounds/boo.wav')
+const youSuck = new Audio('sounds/you-suck.mp3')
 const grid = document.querySelector('.grid')
 const resultDisplay = document.querySelector('#result')
 const resultDisplayTwo = document.querySelector('#result2')
@@ -65,7 +66,8 @@ var cardsChosen = []
 var cardsChosenId = []
 var cardsWon = []
 var cardsLost = []
-var scores = []
+var highScores = []
+var deaths = []
 
 
 //create game board
@@ -111,14 +113,17 @@ function checkForMatch() {
         grid.textContent = 'Winner!'
         cheering.play()
         setTimeout(resetBoard, 3000)
-        scores.push(cardsWon.length + cardsLost.length)
+        highScores.push(cardsWon.length + cardsLost.length)
         recordScore()
     }
-    if (cardsLost.length === 20) {
+    if (cardsLost.length + cardsWon.length > 0) {
         grid.style.color = 'red'
-        grid.textContent = 'Game Over!'
+        grid.textContent = 'Try Again!'
         booing.play()
+        deaths.push(cardsWon.length + cardsLost.length)
         setTimeout(resetBoard, 3000)
+        endLife()
+        gameOver()
     }
 }
 
@@ -134,7 +139,7 @@ function flipCard() {
         setTimeout(checkForMatch, 500)
     }
 }
-//starts game over
+//starts next round by clearing out miss and matches (resultsDisplay). Clears arrays, cardsWon, lost, and chosen. reshuffles cardsArray and creates new board. 
 function resetBoard() {
 
     // for (let i = 0; i < 12; i++) {
@@ -150,9 +155,9 @@ function resetBoard() {
     cardsWon = []
     cardsLost = []
 }
-//Creates Score table rows and writes score to table data elements. Executes until final round 5 Then wipes scores clean. 
+//Creates Score table rows and writes score to table data elements. Executes until 3 highScores are recorded then ends round. 
 function recordScore() {
-    if (scores.length < 2) {
+    if (highScores.length < 3) {
         var tableRow = document.createElement('tr')
         tableRow.setAttribute('class', 'row')
         var tableData = document.createElement('td')
@@ -161,19 +166,44 @@ function recordScore() {
         tableRow.appendChild(tableData)
         scoreTable.appendChild(tableRow)
     } else {
-        scores.sort(function (a, b) { return a - b });
-        var bestScore = scores[0]
+        highScores.sort(function (a, b) { return a - b });
+        var bestScore = highScores[0]
         grid.textContent = "Your best score was: " + bestScore
         setTimeout(endRound, 3000)
     }
 }
-
+// removes table rows in scores table, clears highScores array and resets board. 
 function endRound() {
     var tr = document.querySelector('.row')
     var td = document.querySelector('.score')
     tr.removeChild(td)
-    scores = []
+    highScores = []
     resetBoard()
+}
+// checks length of death array displays game over and ends round once length reaches 3. 
+//TODO - display dialogue box with replay and quit buttons. 
+function gameOver(){
+    if (deaths.length === 3){
+        grid.textContent = "Game Over!"
+        booing.pause()
+        youSuck.play()
+        setTimeout(endRound, 3000)
+    }
+}
+function endLife(){
+    var life1 = document.querySelector('.life1')
+    var life2 = document.querySelector('.life2')
+    var life3 = document.querySelector('.life3')
+
+    if(deaths.length === 1){
+        life3.setAttribute('src', 'images/antique-white')
+    }
+    if(deaths.length === 2){
+        life2.setAttribute('src', 'images/antique-white')
+    }
+    if(deaths.length === 3){
+        life1.setAttribute('src', 'images/antique-white')
+    }
 }
 
 
