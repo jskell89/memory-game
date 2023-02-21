@@ -49,7 +49,7 @@ tr{
 #result2 {
     color: red;
 }
-.life1, .life2, .life3{
+.life{
     height: 100px;
     width: 100px;
 }
