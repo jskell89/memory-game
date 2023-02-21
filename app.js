@@ -58,7 +58,6 @@ const buzzer = new Audio('sounds/Wheel-of-Fortune-Buzzer.mp3')
 const cheering = new Audio('sounds/Crowd-Cheering-Sound-Effect.mp3')
 const booing = new Audio('sounds/boo.wav')
 const grid = document.querySelector('.grid')
-const message = document.querySelector('#message')
 const resultDisplay = document.querySelector('#result')
 const resultDisplayTwo = document.querySelector('#result2')
 const scoreTable = document.querySelector('#table2')
@@ -108,18 +107,16 @@ function checkForMatch() {
     resultDisplay.textContent = cardsWon.length
     resultDisplayTwo.textContent = cardsLost.length
     if (cardsWon.length === cardArray.length / 2) {
-        message.style.left = '525px'
-        message.style.color = 'green'
-        message.textContent = 'Congratulations! All matches found!'
+        grid.style.color = 'green'
+        grid.textContent = 'Winner!'
         cheering.play()
         setTimeout(resetBoard, 3000)
         scores.push(cardsWon.length + cardsLost.length)
         recordScore()
     }
     if (cardsLost.length === 20) {
-        message.style.left = '675px'
-        message.style.color = 'red'
-        message.textContent = 'Game Over!'
+        grid.style.color = 'red'
+        grid.textContent = 'Game Over!'
         booing.play()
         setTimeout(resetBoard, 3000)
     }
@@ -140,12 +137,12 @@ function flipCard() {
 //starts game over
 function resetBoard() {
 
-    for (let i = 0; i < 12; i++) {
-        grid.removeChild(document.getElementById(i))
-    }
+    // for (let i = 0; i < 12; i++) {
+    //     grid.removeChild(document.getElementById(i))
+    // }
     cardArray.sort(() => 0.5 - Math.random())
+    grid.textContent = " "
     createBoard()
-    message.textContent = " "
     resultDisplay.textContent = " "
     resultDisplayTwo.textContent = " "
     cardsChosen = []
@@ -153,16 +150,32 @@ function resetBoard() {
     cardsWon = []
     cardsLost = []
 }
-
+//Creates Score table rows and writes score to table data elements. Executes until final round 5 Then wipes scores clean. 
 function recordScore() {
-
-    var tableRow = document.createElement('tr')
-    var tableData = document.createElement('td')
-    tableData.innerText = cardsWon.length + cardsLost.length
-    tableRow.appendChild(tableData)
-    scoreTable.appendChild(tableRow)
-
-
+    if (scores.length < 2) {
+        var tableRow = document.createElement('tr')
+        tableRow.setAttribute('class', 'row')
+        var tableData = document.createElement('td')
+        tableData.setAttribute('class', 'score')
+        tableData.innerText = cardsWon.length + cardsLost.length
+        tableRow.appendChild(tableData)
+        scoreTable.appendChild(tableRow)
+    } else {
+        scores.sort(function (a, b) { return a - b });
+        var bestScore = scores[0]
+        grid.textContent = "Your best score was: " + bestScore
+        setTimeout(endRound, 3000)
+    }
 }
+
+function endRound() {
+    var tr = document.querySelector('.row')
+    var td = document.querySelector('.score')
+    tr.removeChild(td)
+    scores = []
+    resetBoard()
+}
+
+
 
 createBoard()
