@@ -63,10 +63,13 @@ const noCigar = new Audio('sounds/no-cigar.mp3')
 const grid = document.querySelector('.grid')
 const resultDisplay = document.querySelector('#result')
 const resultDisplayTwo = document.querySelector('#result2')
-const scoreTable = document.querySelector('#table2')
+const scoreTable = document.querySelector('.highScores')
 const life1 = document.querySelector('#life1')
 const life2 = document.querySelector('#life2')
 const life3 = document.querySelector('#life3')
+const form = document.querySelector('#form')
+const game = document.querySelector('.wrapper')
+const footer = document.getElementById('footer')
 
 var cardsChosen = []
 var cardsChosenId = []
@@ -75,6 +78,14 @@ var cardsLost = []
 var highScores = []
 var deaths = []
 
+//handles form submission and stores value of username in variable to display in footer.
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    var username = document.getElementById('username').value
+    game.style.display = "grid"
+    form.style.display = "none"
+    footer.textContent = "Welcome " + username + "!"
+})
 
 //create game board
 function createBoard() {
@@ -98,7 +109,9 @@ function checkForMatch() {
     if (cardsChosen[0] === cardsChosen[1]) {
         foundMatchAudio.play()
         cards[optionOneId].setAttribute('src', 'images/white.png')
+        cards[optionOneId].removeEventListener('click', flipCard)
         cards[optionTwoId].setAttribute('src', 'images/white.png')
+        cards[optionTwoId].removeEventListener('click', flipCard)
         cardsWon.push(cardsChosen)
     } else {
         cards[optionOneId].setAttribute('src', 'images/blank.png')
@@ -106,35 +119,39 @@ function checkForMatch() {
         cardsLost.push(cardsChosen)
         buzzer.play()
     }
+
     cardsChosen = []
     cardsChosenId = []
     resultDisplay.textContent = cardsWon.length
     resultDisplayTwo.textContent = cardsLost.length
+    var score = cardsWon.length + cardsLost.length
+
     if (cardsWon.length === cardArray.length / 2) {
         grid.style.color = 'green'
-        grid.textContent = 'Winner!'
+        grid.textContent = 'Good Job!'
         cheering.play()
         setTimeout(resetBoard, 3000)
-        highScores.push(cardsWon.length + cardsLost.length)
+        highScores.push(score)
         recordScore()
     }
-    if (cardsLost.length + cardsWon.length > 10) {
+    if (score > 14) {
         grid.style.color = 'red'
         grid.textContent = 'Try Again!'
         foundMatchAudio.pause()
         booing.play()
-        deaths.push(cardsWon.length + cardsLost.length)
+        deaths.push(score)
         setTimeout(resetBoard, 3000)
         endLife()
         gameOver()
     }
-    if(cardsWon.length === cardArray.length / 2 && cardsWon.length + cardsLost.length === 11){
+    if (cardsWon.length === cardArray.length / 2 && score === 15) {
         foundMatchAudio.pause()
         cheering.pause()
         booing.pause()
+        youSuck.pause()
         noCigar.play()
+        endLife()
     }
-   
 }
 
 //flip your card
@@ -150,70 +167,73 @@ function flipCard() {
 }
 //starts next round by clearing out miss and matches (resultsDisplay). Clears arrays, cardsWon, lost, and chosen. reshuffles cardsArray and creates new board. 
 function resetBoard() {
-    cardArray.sort(() => 0.5 - Math.random())
+
     grid.textContent = " "
-    createBoard()
     resultDisplay.textContent = " "
     resultDisplayTwo.textContent = " "
     cardsChosen = []
     cardsChosenId = []
     cardsWon = []
     cardsLost = []
+
+    cardArray.sort(() => 0.5 - Math.random())
+    createBoard()
 }
 //Creates Score table rows and writes score to table data elements. Executes until 3 highScores are recorded then ends round. 
 function recordScore() {
+
     var totalScore = cardsWon.length + cardsLost.length
-    if (highScores.length < 3 && totalScore <= 10) {
+    if (highScores.length <= 3 && totalScore <= 14) {
         var tableRow = document.createElement('tr')
         tableRow.setAttribute('class', 'row')
         var tableData = document.createElement('td')
-        tableData.setAttribute('class', 'score')
         tableData.innerText = cardsWon.length + cardsLost.length
         tableRow.appendChild(tableData)
         scoreTable.appendChild(tableRow)
-    } else {
+    }
+    var avgScore = highScores.reduce((a, b) => a + b, 0) / highScores.length
+    if (highScores.length === 3) {
         highScores.sort(function (a, b) { return a - b });
         var bestScore = highScores[0]
-        grid.textContent = "Your best score was: " + bestScore
+        grid.textContent = "Winner!!!" + '\n' + "Your best score was: " + bestScore + '\n' + "Your average was: " + avgScore.toFixed(2)
         setTimeout(endRound, 3000)
     }
 }
-// removes table rows in scores table, clears highScores array, resets board and gives lives back. 
+// removes table rows in scores table, clears highScores array, gives lives back and resets board. 
 function endRound() {
-    life1.setAttribute('src', 'images/napolean.gif')
-    life2.setAttribute('src', 'images/napolean.gif')
-    life3.setAttribute('src', 'images/napolean.gif')
-    deaths = []
+    for (let i = 0; i < highScores.length; i++) {
+        scoreTable.removeChild(document.querySelector('.row'))
+    }
 
-    var tr = document.querySelector('.row')
-    var td = document.querySelector('.score')
+    life1.style.display = "inline"
+    life2.style.display = "inline"
+    life3.style.display = "inline"
+
+    deaths = []
     highScores = []
     resetBoard()
-    tr.removeChild(td)
-    
 }
 // checks length of death array displays game over and ends round once length reaches 3. 
 //TODO - display dialogue box with replay and quit buttons. 
-function gameOver(){
-    if (deaths.length === 3){
+function gameOver() {
+    if (deaths.length === 3) {
         grid.textContent = "Game Over!"
         booing.pause()
         youSuck.play()
         setTimeout(endRound, 3000)
     }
 }
-function endLife(){
-    if(deaths.length === 1){
-        life3.setAttribute('src', 'images/antique')
+function endLife() {
+    if (deaths.length === 1) {
+        life3.style.display = "none"
     }
-    if(deaths.length === 2){
-        life2.setAttribute('src', 'images/antique')
+    if (deaths.length === 2) {
+        life2.style.display = "none"
     }
-    if(deaths.length === 3){
-        life1.setAttribute('src', 'images/antique')
+    if (deaths.length === 3) {
+        life1.style.display = "none"
     }
 }
-
 
 
 createBoard()

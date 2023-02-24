@@ -7,25 +7,21 @@ body {
     flex-wrap: wrap;
     height: 300px;
     width: 400px;
-    position: absolute;
-    top: 25%;
-    left: 37.5%;
     justify-content: center;
-    align-items: center;
+    align-content: center;
     font-size: xx-large;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+ }
+
+.runningScore {
+   height: 50px;
+   width: 200px;
 }
 
-table {
-    position: absolute;
-    left: 45%;
-}
-
-#table2 {
-    position: absolute;
-    left: 46.5%;
-    bottom: 20%
-}
+.highScores {
+    height: 50px;
+    width: 150px;
+} 
 
 table,
 th,
@@ -49,7 +45,43 @@ tr{
 #result2 {
     color: red;
 }
-.life{
+#life1, #life2, #life3{
     height: 100px;
     width: 100px;
+}
+.lives{
+    justify-self: start;
+    align-self: start;
+    grid-area: lf;
+}
+.runningScore{
+    justify-self: center;
+    align-self: center;
+    grid-area: rs;
+}
+.grid, .card{
+    align-self: center;
+    justify-self: center;
+    grid-area: gr;
+}
+.highScores{
+    justify-self: center;
+    align-self: start;
+    grid-area: hs;
+}
+#footer{
+    align-self: center;
+    justify-self: center;
+    grid-area: ft;
+}
+.wrapper{
+    display: none;
+    width: 98%;
+    margin: auto;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas: 
+    "lf rs hs"
+    ". gr ."
+    ". ft .";
 }
