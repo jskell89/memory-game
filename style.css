@@ -2,6 +2,154 @@ body {
     background-color: antiquewhite;
 }
 
+#form {
+    height: 400px;
+    width: 800px;
+    border: solid black 2px;
+    position: sticky;
+    margin: auto;
+    margin-top: 25vh;
+    border-radius: 40px;
+    box-shadow: 5px 10px 18px #888888;
+    background-image: url("images/brain-giphy.gif");
+    background-repeat: no-repeat;
+    background-position: 450px 100px;
+    place-items: center;
+}
+
+h1 {
+    width: 300px;
+    font-family: monospace;
+    font-size: 35px;
+    letter-spacing: .17em;
+    margin: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: .17em solid pink;
+    animation: typing 2.5s steps(30, end), blinking-cursor .5s step-end infinite;
+}
+
+@keyframes typing {
+    from {
+        width: 0
+    }
+
+    to {
+        width: 40%
+    }
+}
+
+@keyframes blinking-cursor {
+
+    from,
+    to {
+        border-color: transparent
+    }
+
+    50% {
+        border-color: pink;
+    }
+}
+
+p {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-family: monospace;
+    font-size: x-large;
+}
+
+
+input {
+    background-color: transparent;
+    margin-left: 260px;
+    margin-top: 20px;
+    box-sizing: border-box;
+    border: 3px solid #555;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    border-radius: 20px;
+    height: 40px;
+    width: 200px;
+    text-align: center;
+    font-size: large;
+
+}
+
+input:focus {
+    border: 3px solid black;
+}
+
+#startGame {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    left: 260px;
+    margin-top: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+#startGame {
+    appearance: none;
+    background-color: transparent;
+    border: 2px solid #1A1A1A;
+    border-radius: 15px;
+    box-sizing: border-box;
+    color: #3B3B3B;
+    cursor: pointer;
+    font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 16px;
+    font-weight: 600;
+    line-height: normal;
+    min-height: 40px;
+    outline: none;
+    text-align: center;
+    text-decoration: none;
+    transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 200px;
+    will-change: transform;
+}
+
+#startGame:disabled {
+    pointer-events: none;
+}
+
+#startGame:hover {
+    color: #fff;
+    background-color: #1A1A1A;
+    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+    transform: translateY(-2px);
+}
+
+#startGame:active {
+    box-shadow: none;
+    transform: translateY(0);
+}
+
+#startOver,
+#quit {
+    display: flex;
+    flex-direction: column;
+    border-radius: 12px;
+    font-size: 20px;
+    height: 60px;
+    width: 150px;
+    border: none;
+    background-color: #f6d8b9;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+#startOver:hover,
+#quit:hover {
+    box-shadow: 2px 3px 4px;
+}
+
 .grid {
     display: flex;
     flex-wrap: wrap;
@@ -11,17 +159,17 @@ body {
     align-content: center;
     font-size: xx-large;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
- }
-
-.runningScore {
-   height: 50px;
-   width: 200px;
 }
 
-.highScores {
+.runningScore {
+    height: 50px;
+    width: 200px;
+}
+
+.bestScores {
     height: 50px;
     width: 150px;
-} 
+}
 
 table,
 th,
@@ -30,58 +178,78 @@ td {
     border-color: gray;
 }
 
-#score{
+#score {
     text-align: center;
 }
 
-tr{
+tr {
     text-align: center;
 }
 
-#result {
+th {
+    background-color: #f6d8b9;
+}
+
+#matches {
     color: green;
 }
 
-#result2 {
+#misses {
     color: red;
 }
-#life1, #life2, #life3{
+
+#life1,
+#life2,
+#life3 {
     height: 100px;
     width: 100px;
 }
-.lives{
+
+.lives {
     justify-self: start;
     align-self: start;
     grid-area: lf;
 }
-.runningScore{
+
+.runningScore {
     justify-self: center;
     align-self: center;
     grid-area: rs;
 }
-.grid, .card{
+
+.grid,
+.card {
     align-self: center;
     justify-self: center;
     grid-area: gr;
 }
-.highScores{
-    justify-self: center;
+
+.bestScores {
+    justify-self: right;
     align-self: start;
     grid-area: hs;
 }
-#footer{
+
+#footer {
     align-self: center;
     justify-self: center;
     grid-area: ft;
 }
-.wrapper{
+
+.options {
+    align-self: center;
+    justify-self: center;
+    grid-area: op;
+}
+
+.wrapper {
     display: none;
     width: 98%;
     margin: auto;
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: repeat(3, 1fr);
-    grid-template-areas: 
-    "lf rs hs"
-    ". gr ."
-    ". ft .";
+    grid-template-areas:
+        "lf rs hs"
+        "op gr ."
+        ". ft .";
 }

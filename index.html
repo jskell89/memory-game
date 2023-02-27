@@ -15,38 +15,50 @@
     <form id="form">
         <h1>Memory Game</h1>
         <p>This is a test of your memory. You need to match all the cards on the board. (12 cards 6 matches). If you
-            cannot get all the matches in 14 tries you will lose a life.
-            You are given 3 lives. The game will end when you lose all your lives. To win the game you need to match all
-            cards 3 times and receive 3 high scores.
-            You will then be given your highest and average score. Good Luck!</p>
+            cannot get all the matches in 12 tries you will lose a life.
+            You are given 3 lives. The game will end in two ways, lose all your lives, or collect 3 scores below 12.
+            Good Luck!!</p>
         <input type="text" id="username" placeholder="Username"></input>
-        <button type="submit" onclick="submit">Start Game</button>
+        <button id="startGame" type="submit">Start Game</button>
     </form>
 
     <div class="wrapper">
 
+        <dialog id="prompt">
+            Would you like to play again?
+            <button onclick="resetBoard()">Yes</button><button onclick="closeGame()">No</button>
+        </dialog>
+
         <div class="lives">
-            <img id="life1" src="images/napolean.gif">
-            <img id="life2" src="images/napolean.gif">
-            <img id="life3" src="images/napolean.gif">
+            <img id="life1" src="images/brain-giphy.gif">
+            <img id="life2" src="images/brain-giphy.gif">
+            <img id="life3" src="images/brain-giphy.gif">
         </div>
+
         <table class="runningScore">
             <tr>
                 <th>Matches</th>
                 <th>Misses</th>
+                <th>Total</th>
             </tr>
             <tr>
-                <td id="result"></td>
-                <td id="result2"></td>
+                <td id="matches"></td>
+                <td id="misses"></td>
+                <td id="total"></td>
             </tr>
         </table>
+
+        <div class="options">
+            <button id="startOver" onclick="(endRound(), resetBoard())">Start Over</button>
+            <button id="quit" onclick="(endRound(), closeGame())">Quit</button>
+        </div>
 
         <div class="grid">
         </div>
 
-        <table class="highScores" id="table2">
+        <table class="bestScores">
             <tr>
-                <th>High Scores</th>
+                <th>Best Scores</th>
             </tr>
         </table>
         <footer id="footer"></footer>
