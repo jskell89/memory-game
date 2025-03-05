@@ -1,0 +1,22 @@
+{
+  "name": "memory-game",
+  "version": "1.0.0",
+  "description": "card matching game",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jskell89/memory-game.git"
+  },
+  "author": "josh skelly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jskell89/memory-game/issues"
+  },
+  "homepage": "https://github.com/jskell89/memory-game#readme",
+  "dependencies": {
+    "canvas-confetti": "^1.9.3"
+  }
+}

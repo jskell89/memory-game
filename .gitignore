@@ -1,0 +1,6 @@
+node_modules/
+.vscode/
+# IntelliJ
+.idea/
+*.iml
+*.iws

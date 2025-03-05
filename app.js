@@ -1,271 +1,432 @@
-//card options
-const cardArray = [
-    {
-        name: 'bird',
-        img: 'images/bird.png'
-    },
-    {
-        name: 'bird',
-        img: 'images/bird.png'
-    },
-    {
-        name: 'coffee',
-        img: 'images/coffee.png'
-    },
-    {
-        name: 'coffee',
-        img: 'images/coffee.png'
-    },
-    {
-        name: 'hat',
-        img: 'images/hat.png'
-    },
-    {
-        name: 'hat',
-        img: 'images/hat.png'
-    },
-    {
-        name: 'owl',
-        img: 'images/owl.png'
-    },
-    {
-        name: 'owl',
-        img: 'images/owl.png'
-    },
-    {
-        name: 'sun',
-        img: 'images/sun.png'
-    },
-    {
-        name: 'sun',
-        img: 'images/sun.png'
-    },
-    {
-        name: 'hazard',
-        img: 'images/hazard.png'
-    },
-    {
-        name: 'hazard',
-        img: 'images/hazard.png'
-    },
-];
+class Game {
+    constructor() {
+        this.cardArray = [
+            {
+                name: 'bird',
+                img: 'images/bird.png',
+                isMatched: false
+            },
+            {
+                name: 'bird',
+                img: 'images/bird.png',
+                isMatched: false
+            },
+            {
+                name: 'coffee',
+                img: 'images/coffee.png',
+                isMatched: false
+            },
+            {
+                name: 'coffee',
+                img: 'images/coffee.png',
+                isMatched: false
+            },
+            {
+                name: 'hat',
+                img: 'images/hat.png',
+                isMatched: false
+            },
+            {
+                name: 'hat',
+                img: 'images/hat.png',
+                isMatched: false
+            },
+            {
+                name: 'owl',
+                img: 'images/owl.png',
+                isMatched: false
+            },
+            {
+                name: 'owl',
+                img: 'images/owl.png',
+                isMatched: false
+            },
+            {
+                name: 'sun',
+                img: 'images/sun.png',
+                isMatched: false
+            },
+            {
+                name: 'sun',
+                img: 'images/sun.png',
+                isMatched: false
+            },
+            {
+                name: 'hazard',
+                img: 'images/hazard.png',
+                isMatched: false
+            },
+            {
+                name: 'hazard',
+                img: 'images/hazard.png',
+                isMatched: false
+            }
+        ]
 
-cardArray.sort(() => 0.5 - Math.random());
+        this.audio = {
+            flip: new Audio('sounds/Card-flip.mp3'),
+            match: new Audio('sounds/anime-wow-sound-effect.mp3'),
+            buzzer: new Audio('sounds/Wheel-of-Fortune-Buzzer.mp3'),
+            cheering: new Audio('sounds/Crowd-Cheering-Sound-Effect.mp3'),
+            booing: new Audio('sounds/boo.wav'),
+            youSuck: new Audio('sounds/you-suck.mp3'),
+            noCigar: new Audio('sounds/no-cigar.mp3'),
+            winner: new Audio('sounds/winner.mp3')
+        }  
 
-const flipCardAudio = new Audio('sounds/Card-flip.mp3');
-const foundMatchAudio = new Audio('sounds/anime-wow-sound-effect.mp3');
-const buzzer = new Audio('sounds/Wheel-of-Fortune-Buzzer.mp3');
-const cheering = new Audio('sounds/Crowd-Cheering-Sound-Effect.mp3');
-const booing = new Audio('sounds/boo.wav');
-const youSuck = new Audio('sounds/you-suck.mp3');
-const noCigar = new Audio('sounds/no-cigar.mp3');
-const winner = new Audio('sounds/winner.mp3');
-
-const grid = document.querySelector('.grid');
-const dialogBox = document.getElementById('dialog');
-const matches = document.getElementById('matches');
-const misses = document.getElementById('misses');
-const total = document.getElementById('total');
-const scoreTable = document.querySelector('.bestScores');
-const life1 = document.getElementById('life1');
-const life2 = document.getElementById('life2');
-const life3 = document.getElementById('life3');
-const form = document.getElementById('form');
-const game = document.querySelector('.wrapper');
-const footer = document.getElementById('footer');
-const prompt = document.getElementById('prompt');
-
-var Username = [];
-var cardsChosen = [];
-var cardsChosenId = [];
-var cardsWon = [];
-var cardsLost = [];
-var bestScores = [];
-var deaths = [];
-
-//handles form submission and stores value of username in variable to display in footer and in array to display in winning message. Turns off display for form element and turns it on for div wrapping the game elements. 
-form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    resetBoard();
-    var username = document.getElementById('username').value;
-    game.style.display = "grid";
-    form.style.display = "none";
-    footer.textContent = "Welcome " + username + "!";
-    Username.push(username);
-})
-
-//create game board by looping through cardArray setting src images, unique id, and a class name then appending to the grid div. Puts event listener on each card and invokes flipCard function on click. 
-function createBoard() {
-    if (deaths.length === 3 || bestScores.length === 3) {
-        endRound();
-    } else {
-        for (let i = 0; i < cardArray.length; i++) {
-            var card = document.createElement('img');
-            card.setAttribute('src', 'images/blank.png');
-            card.setAttribute('id', i);
-            card.setAttribute('class', 'card');
-            card.addEventListener('click', flipCard);
-            grid.appendChild(card);
+        this.elements = {
+            overlay: document.querySelector('.overlay'),
+            cardContainer: document.querySelector('.card-container'),
+            dialogBox: document.getElementById('dialog'),
+            matches: document.getElementById('matches'),
+            misses: document.getElementById('misses'),
+            total: document.getElementById('total'),
+            turnsRemaining: document.getElementById('turnsRemaining'),
+            accuracy: document.getElementById('accuracy'),
+            scoreTable: document.querySelector('.highScores'),
+            formWrapper: document.querySelector('.form-wrapper'),
+            form: document.getElementById('startGameForm'),
+            game: document.querySelector('.game-wrapper'),
+            footer: document.getElementById('footer'),
+            livesContainer: document.getElementById('lives'),
+            startOverBtn: document.getElementById('startOver'),
+            quiteBtn: document.getElementById('quit'),
+            prompt: document.getElementById('prompt'),
+            promptYesBtn: document.getElementById('yesBtn'),
+            promptNoBtn: document.getElementById('noBtn')
         }
-    }
-}
 
-//check for matches and determine win or loss. Stores wins and losses and checks score to determine unique alerts, messaging, if score should be recorded, and calls resetBoard.
-function checkForMatch() {
-    var cards = document.querySelectorAll('.card');
-    const optionOneId = cardsChosenId[0];
-    const optionTwoId = cardsChosenId[1];
-    if (cardsChosen[0] === cardsChosen[1]) {
-        foundMatchAudio.play();
-        cards[optionOneId].setAttribute('src', 'images/white.png');
-        cards[optionTwoId].setAttribute('src', 'images/white.png');
-        cardsWon.push(cardsChosen);
-    } else {
-        cards[optionOneId].setAttribute('src', 'images/blank.png');
-        cards[optionOneId].addEventListener('click', flipCard);
-        cards[optionTwoId].setAttribute('src', 'images/blank.png');
-        cards[optionTwoId].addEventListener('click', flipCard);
+    this.player = {
+            name: '',
+            lives: 3,
+            matches: 0,
+            misses: 0,
+            highScores: [],
+            chosenCards: [], //temporarily stores the cards chosen by the user to check for match (only two cards are ever added may want to consider two variables instead of array)
+
+            getTotalScore: function () {
+                return this.matches + this.misses;
+            },
+
+            getBestScore: function () {
+                return Math.min(...this.highScores);
+            },
+
+            getAverageScore: function () {
+              const sum = this.highScores.reduce((acc, current) => acc + current, 0);
+              return (sum / this.highScores.length).toFixed(2);
+            },
+
+            getAccuracy: function () {
+                let accuracy = (this.matches / this.getTotalScore()) * 100;
+              return accuracy.toFixed().toString() + "%";
+            },
+
+            reset() {
+                this.matches = 0;
+                this.misses = 0;
+                this.chosenCards = [];
+            }
+        }
         
-        cardsLost.push(cardsChosen);
-        buzzer.play();
     }
-    var curScore = cardsWon.length + cardsLost.length;
-    var remainder = 6 - cardsWon.length;
 
-    if (cardsWon.length === cardArray.length / 2) {
-        checkScore()
-        setTimeout(resetBoard, 3000);
+    init() {
+        this.shuffleCards();
+        this.createLives();
+        this.bindEvents();
     }
-    // remainder is added to current score so user doesn't have to play out until they are above threshold when there is no chance of winning.
-    if (curScore + remainder > 12) {
-        foundMatchAudio.pause();
-        booing.play();
-        deaths.push(curScore);
-        endLife()
-        setTimeout(resetBoard, 3000);
-        if(deaths.length < 3){
-        grid.style.fontSize = "xx-large";
-        grid.style.color = 'red';
-        grid.innerText = "You lost a life. \nTry Again!";
+
+    shuffleCards() {
+        this.cardArray.sort(() => 0.5 - Math.random());
+    }
+
+    bindEvents() {
+        this.elements.form.addEventListener('submit', (e) => this.handleFormSubmission(e));
+        this.elements.startOverBtn.addEventListener('click', () => this.resetBoard());
+        this.elements.quiteBtn.addEventListener('click', () => this.closeGame());
+        this.elements.promptYesBtn.addEventListener('click', () => {
+            this.elements.prompt.close();
+            this.elements.overlay.style.display = 'none';
+            this.resetGame()
+        });
+        this.elements.promptNoBtn.addEventListener('click', () => {
+            this.elements.prompt.close();
+            this.elements.overlay.style.display = 'none';
+            this.closeGame()
+        });
+    }
+
+    handleFormSubmission(e) {
+        e.preventDefault();
+        this.resetGame();
+        this.player.name = document.getElementById('username').value;
+        this.elements.footer.textContent = `Welcome ${this.player.name}!`;
+        this.elements.formWrapper.style.display = 'none';
+        this.elements.game.style.display = 'grid';
+    }
+
+    createLives() {
+        for (let i = 0; i < this.player.lives; i++) {
+            const life = document.createElement('img');
+            life.className = 'life';
+            life.src = 'images/brain-giphy.gif';
+            this.elements.livesContainer.appendChild(life);
         }
     }
-    cardsChosen = [];
-    cardsChosenId = [];
-    matches.textContent = cardsWon.length;
-    misses.textContent = cardsLost.length;
-    total.textContent = cardsWon.length + cardsLost.length
 
-}
-//checks if final score is one over threshold, plays unique sound, and ends life. Checks for scores under threshold and gives corresponding message and records score. 
-function checkScore() {
-    var finalScore = cardsWon.length + cardsLost.length;
-    if (finalScore === 13) {
-        foundMatchAudio.pause();
-        booing.pause();
-        noCigar.play();
-        endLife();
-    }
-    if (finalScore <= 12) {
-        cheering.play();
-        recordScore();
-        grid.style.fontSize = "xx-large"
-        grid.style.color = 'green';
-        grid.textContent = 'Good Job!';
-    }
-}
+    createBoard() {
+        for(let i = 0; i < this.cardArray.length; i++) {
+            const card = document.createElement('div');
+            const cardInner = document.createElement('div');
+            const cardFront = document.createElement('div');
+            const cardFrontImg = document.createElement('img');
+            const cardBack = document.createElement('div');
+            const cardBackImg = document.createElement('img');
 
-//flip your card and store in cardsChosen array so they can be compared in checkForMatch function. Also storing the Id so the correct cards can be targeted for attribute change.
-//Removes click event listener so that cards currently chosen cannot be clicked twice. put back on in checkForMatch once card is flipped back over.
-function flipCard() {
-    this.removeEventListener('click', flipCard)
-    flipCardAudio.play();
-    var cardId = this.getAttribute('id');
-    cardsChosen.push(cardArray[cardId].name);
-    cardsChosenId.push(cardId);
-    this.setAttribute('src', cardArray[cardId].img);
-    if (cardsChosen.length == 2) {
-        setTimeout(checkForMatch, 500);
-    }
-}
-//starts next round by clearing out misses and matches. Clears arrays, cardsWon, lost, and chosen. reshuffles cardsArray and creates new board. 
-//Is used to generate a new board until conditions are met to complete the entire round. In which case endRound is triggered in createBoard which will also clear out deaths and high scores. 
-function resetBoard() {
-    prompt.open = false;
-    if (bestScores.length < 3 || deaths.length < 3) {
-        grid.textContent = " ";
-        misses.textContent = " ";
-        matches.textContent = " ";
-        total.textContent = " ";
-        cardsChosen = [];
-        cardsChosenId = [];
-        cardsWon = [];
-        cardsLost = [];
-        cardArray.sort(() => 0.5 - Math.random());
-        createBoard();
-    }
-}
+            card.className = 'card';
+            cardInner.className = 'card-inner';
+            cardInner.setAttribute('id', i.toString());
+            cardFront.className = 'card-front';
+            cardBack.className = 'card-back';
+            cardFrontImg.src = 'images/blank.png';
+            cardBackImg.src = this.cardArray[i].img;
+            cardBackImg.className = 'card-back-img';
+            
+            cardFront.appendChild(cardFrontImg);
+            cardBack.appendChild(cardBackImg);
+            cardInner.appendChild(cardFront);
+            cardInner.appendChild(cardBack);
+            card.appendChild(cardInner);
+            this.elements.cardContainer.appendChild(card);
 
-//Creates Score table rows and writes score to table data elements. Pushes score to bestScores array. Executes until 3 bestScores have been recorded.
-function recordScore() {
-    var totalScore = cardsWon.length + cardsLost.length;
-    if (bestScores.length <= 3) {
-        bestScores.push(totalScore);
-        var tableRow = document.createElement('tr');
-        tableRow.setAttribute('class', 'row');
-        var tableData = document.createElement('td');
-        tableData.innerText = cardsWon.length + cardsLost.length;
-        tableRow.appendChild(tableData);
-        scoreTable.appendChild(tableRow);
+            cardInner.addEventListener('click', this.flipCard.bind(this, i));
+        }
     }
-}
-// removes table rows in scores table, clears bestScores and deaths arrays. Determines which message to display and re-displays any lost lives. 
-// opens end of game prompt asking if you want to play again. Yes invokes resetBoard so you can continue as current user. No takes you back to the sign in form. 
-function endRound() {
-    prompt.open = true;
-    if (bestScores.length === 3) {
-        bestScores.sort(function (a, b) { return a - b });
-        var bestScore = bestScores[0];
-        var avgScore = bestScores.reduce((a, b) => a + b, 0) / bestScores.length;
-        grid.style.fontSize = 'large';
-        grid.style.color = "green";
-        grid.innerText = "Congratulations " + Username[0] + "!!" + "\nYour best score was: " + bestScore + "\nYour average was: " + avgScore.toFixed(2);
-        winner.play();
-    }
-    if (deaths.length === 3) {
-        grid.style.color = "red";
-        grid.innerText = "Game Over!";
-        booing.pause();
-        youSuck.play();
-    }
-    for (let i = 0; i < bestScores.length; i++) {
-        scoreTable.removeChild(document.querySelector('.row'));
-    }
-    life1.style.display = "inline";
-    life2.style.display = "inline";
-    life3.style.display = "inline";
-    deaths = [];
-    bestScores = [];
-}
-//checks number of deaths and turns off display on img elements representing lives.
-function endLife() {
-    if (deaths.length === 1) {
-        life3.style.display = "none";
-    }
-    if (deaths.length === 2) {
-        life2.style.display = "none";
-    }
-    if (deaths.length === 3) {
-        life1.style.display = "none";
-    }
-}
-//turns display off for wrapper div around game elements, assigns display value to form, and clears current users username from Username array. 
-function closeGame() {
-    game.style.display = "none";
-    form.style.display = "block";
-    Username = [];
-}
 
 
+    flipCard(cardID) { 
+        const card = document.getElementById(cardID);
+        card.classList.add('flipped');
+        this.audio.flip.play();
+
+        this.player.chosenCards.push(this.cardArray[cardID].img);
+
+        if (this.player.chosenCards.length === 2) {
+            setTimeout(this.checkForMatch.bind(this), 500);
+        }
+    }
+
+     checkForMatch() {
+        let cards = document.querySelectorAll('.card-inner');
+
+        if (this.player.chosenCards[0] === this.player.chosenCards[1]) {
+            this.audio.match.play();
+            this.player.matches += 1;
+
+            cards.forEach(card => {
+                if (card.classList.contains('flipped')) {
+                    card.classList.add('matched');
+                    this.cardArray[card.getAttribute('id')].isMatched = true;
+                } 
+            });
+
+        } else {
+            this.audio.buzzer.play();
+            this.player.misses += 1;
+
+            cards.forEach(card => {
+                if (!card.classList.contains('matched')) {
+                    setTimeout(() => {
+                        card.classList.remove('flipped');
+                    }, 500);
+                }
+                
+            });
+        }
+        this.checkWinCondition();
+    }
 
 
+    checkWinCondition() {
+        let totalMatchesToWin = this.cardArray.length / 2;
+        let remainingMatches  = totalMatchesToWin - this.player.matches;
 
+        // checking if the player got all the matches if so check if done in less turns than required to win, if so records score and displays message.
+        if (this.player.matches === totalMatchesToWin) {
+            if (this.player.getTotalScore() <= this.cardArray.length) {
+                this.audio.cheering.play();
+                this.recordHighScore(this.player.getTotalScore()); // updates players highScores array and displays in table on front end.
+
+                if (this.player.highScores.length === 3) {
+                    this.gameWin();
+                } else {
+                    this.roundWin(); // displays win message resets board for next round.
+                }
+            }
+        }
+        // checking to see if it's possible to get all matches in less turns than number of cards in cardArray, if not calls endLife().
+        if (this.player.getTotalScore() + remainingMatches > this.cardArray.length) {
+            this.audio.match.pause();
+            this.audio.booing.play();
+            this.player.lives -= 1;
+            this.endLife(); // removes life indicators and checks if 0 lives left if so calls gameOver().
+
+            if (this.player.lives > 0) {
+                this.roundLose(); // displays lose message resets board for next round
+            }
+        }
+
+        // clear chosenCards array and update running scoreboard.
+        this.player.chosenCards = [];
+        this.updateScoreBoard();
+    }
+
+    recordHighScore(score) {
+        this.player.highScores.push(score);
+        this.elements.scoreTable.insertAdjacentHTML('beforeend',
+            `<tr class="row">
+                <td>${score}</td>
+            </tr>`
+        );
+    }
+
+    updateScoreBoard() {
+        this.elements.matches.textContent = this.player.matches;
+        this.elements.misses.textContent = this.player.misses;
+        this.elements.total.textContent = this.player.getTotalScore().toString();
+        this.elements.turnsRemaining.textContent = (this.cardArray.length - this.player.getTotalScore()).toString();
+        this.elements.accuracy.textContent = this.player.getAccuracy();
+    }
+
+    // sets display to none on indicators for lives and calls gameOver if no lives left.
+    endLife() {
+        let lives = document.querySelectorAll('.life');
+        lives[this.player.lives].style.display = 'none';
+    
+        if (this.player.lives === 0) {
+            this.gameOver();
+        }
+    }
+
+    roundWin() {
+        this.elements.cardContainer.style.fontSize = "xx-large"
+        this.elements.cardContainer.style.color = 'green';
+        this.elements.cardContainer.textContent = 'Good Job!';
+        setTimeout(this.resetBoard.bind(this), 3000);
+    }
+
+    roundLose() {
+        this.elements.cardContainer.style.fontSize = "xx-large";
+        this.elements.cardContainer.style.color = 'red';
+        this.elements.cardContainer.innerText = "You lost a life. \nTry Again!";
+        setTimeout(this.resetBoard.bind(this), 3000);
+    }
+
+    gameWin() {
+        confetti({
+            particleCount: 1000,
+            spread: 1000,
+            origin: { y: 0.3 }
+        });
+        this.statAnimation();
+        this.audio.winner.play();
+        this.openPrompt();
+    }
+
+    gameOver() {
+        this.elements.cardContainer.style.color = "red";
+        this.elements.cardContainer.innerText = "Game Over!";
+        this.audio.booing.pause();
+        this.audio.youSuck.play();
+
+        setTimeout(this.openPrompt.bind(this), 3000);
+    }
+
+    openPrompt() {
+        this.elements.overlay.style.display = 'block';
+        this.elements.prompt.open = true;
+    }
+
+    async statAnimation () {
+        const stats = [
+            { text: "High Score: " + this.player.getBestScore() },
+            { text: "Average Score: " + this.player.getAverageScore() },
+            { text: "Accuracy: " + this.player.getAccuracy() }
+        ];
+
+        const animationDelay = 1300; // Adjust timing as needed
+
+        for (const stat of stats) {
+            const p = document.createElement('p');
+            p.textContent = stat.text;
+            p.className = 'stat-item';
+            document.querySelector('.stats').append(p);
+
+            await new Promise(resolve => setTimeout(resolve, animationDelay));
+        }
+
+        const buttonGroup = document.querySelector('.button-txt-group');
+        buttonGroup.classList.add('fade-in');
+    }
+
+    resetLives() {
+        const lives = this.elements.livesContainer.querySelectorAll('.life');
+        lives.forEach((life) => {life.style.display = 'inline'});
+        this.player.lives = 3;
+    }
+
+    resetScores() {
+        this.player.highScores = [];
+        this.clearScores();
+    }
+
+    resetGame() {
+        this.resetLives();
+        this.resetScores();
+        this.resetBoard()
+    }
+
+    clearScores() {
+        const rows = this.elements.scoreTable.querySelectorAll('.row');
+        rows.forEach(row => row.remove());
+    }
+
+    resetBoard() {
+        prompt.open = false;
+        if (this.player.highScores.length < 3 || this.player.lives > 0) {
+
+            this.elements.cardContainer.textContent = "";
+            this.elements.misses.textContent = "";
+            this.elements.matches.textContent = "";
+            this.elements.total.textContent = "";
+            this.elements.turnsRemaining.textContent = this.cardArray.length.toString();
+            this.elements.accuracy.textContent = "";
+
+            this.player.reset();
+            this.shuffleCards();
+            this.createBoard();
+        }
+    }
+
+    // hides game shows login form. login form submit resets game.
+    closeGame() {
+        this.elements.game.style.display = "none";
+        this.elements.formWrapper.style.display = "block";
+        document.getElementById('username').value = "";
+        this.player.name = "";
+        this.elements.cardContainer.replaceChildren();
+    }
+
+    debugStats = () => {
+        this.gameWin();
+    }
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const game = new Game();
+    window.game = game; // only need for testing purposes to call debugStats() from console
+    window.debugStats = game.debugStats;
+    game.init();
+});

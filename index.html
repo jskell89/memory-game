@@ -5,60 +5,77 @@
     <meta charset='utf-8' name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Memory Game</title>
     <link rel='stylesheet' href='style.css'>
-    </link>
+    <script src="node_modules/canvas-confetti/dist/confetti.browser.js"></script>
     <script src='app.js' charset="utf-8" defer></script>
-
 </head>
 
 <body>
+<div class="overlay"></div>
+    <div class="form-wrapper">
+        <form id="startGameForm">
+            <div class="form-inner">
+                <div class="form-content">
+                    <h1>Memory Game</h1>
+                    <p class="form-text">This is a test of your memory. You need to match all the cards on the board with an accuracy percentage above 50%.
+                        You are given 3 lives. Collect 3 high scores before losing all of your lives to get to the next level.
+                        Good Luck!!</p>
+                </div>
+                <div class="form-group">
+                    <div class="input-btn-group">
+                        <input type="text" id="username" placeholder="Username"></input>
+                        <button id="startGame" type="submit">Start Game</button>
+                    </div>
+                    <div class="img-wrapper">
+                        <img src="images/brain-giphy.gif" alt="brain">
+                    </div>
+                </div>
 
-    <form id="form">
-        <h1>Memory Game</h1>
-        <p>This is a test of your memory. You need to match all the cards on the board. (12 cards 6 matches). If you
-            cannot get all the matches in 12 tries you will lose a life.
-            You are given 3 lives. The game will end in two ways, lose all your lives, or collect 3 scores at or below 12.
-            Good Luck!!</p>
-        <input type="text" id="username" placeholder="Username"></input>
-        <button id="startGame" type="submit">Start Game</button>
-    </form>
+            </div>
+        </form>
+    </div>
 
-    <div class="wrapper">
+<dialog id="prompt">
+    <div class="stats"></div>
+    <div class="button-txt-group">
+    <div class="prompt-text">Would you like to play again?</div>
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+</dialog>
+    
+    <div class="game-wrapper">
 
-        <dialog id="prompt">
-            Would you like to play again?
-            <button onclick="resetBoard()">Yes</button><button onclick="closeGame()">No</button>
-        </dialog>
-
-        <div class="lives">
-            <img id="life1" src="images/brain-giphy.gif">
-            <img id="life2" src="images/brain-giphy.gif">
-            <img id="life3" src="images/brain-giphy.gif">
+        <div id="lives">
         </div>
 
         <table class="runningScore">
             <tr>
                 <th>Matches</th>
                 <th>Misses</th>
-                <th>Total</th>
+                <th>Total Turns</th>
+                <th>Remaining Turns</th>
+                <th>Accuracy</th>
             </tr>
             <tr>
                 <td id="matches"></td>
                 <td id="misses"></td>
                 <td id="total"></td>
+                <td id="turnsRemaining"></td>
+                <td id="accuracy"></td>
             </tr>
         </table>
 
         <div class="options">
-            <button id="startOver" onclick="(endRound(), resetBoard())">Start Over</button>
-            <button id="quit" onclick="(endRound(), closeGame())">Quit</button>
+            <button id="startOver">Start Over</button>
+            <button id="quit">Quit</button>
         </div>
 
-        <div class="grid">
+        <div class="card-container">
         </div>
 
-        <table class="bestScores">
+        <table class="highScores">
             <tr>
-                <th>Best Scores</th>
+                <th>High Scores</th>
             </tr>
         </table>
         <footer id="footer"></footer>
