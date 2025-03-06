@@ -14,6 +14,10 @@ export class Player {
         return [...this._highScores]; // Return a copy to prevent direct modification
     }
 
+    getHighestScore() {
+        return Math.min(...this._highScores);
+    }
+
     addHighScore(score) {
         this._highScores.push(score);
     }

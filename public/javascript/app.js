@@ -10,6 +10,7 @@ class Game {
         this.audio = new AudioManager();
         this.ui = new UIManager();
         this.cardManager = new CardManager();
+        this.rounds = 3;
         this.totalCards = this.cardManager.getCardCount();
         this.totalMatchesNeeded = this.totalCards * 0.5;
     }
@@ -228,23 +229,23 @@ class Game {
 
     async statAnimation () {
         const stats = [
-            { text: "High Score: " + this.player.getHighScores() },
-            { text: "Average Score: " + this.player.getAverageScore() },
-            { text: "Accuracy: " + ((this.totalMatchesNeeded / this.player.getHighScores()) * 100).toFixed().toString() + "%" }
+            { text: "High Score: " + this.player.getHighestScore().toString() },
+            { text: "Average Score: " + this.player.getAverageScore().toString() },
+            { text: "Accuracy: " + (((this.totalMatchesNeeded * this.rounds) / (this.player.getHighScores().reduce((accumulator, currentValue) => accumulator + currentValue, 0))) * 100).toFixed().toString() + "%" }
         ];
 
-        const animationDelay = 1300; // Adjust timing as needed
+        const animationDelay = 1300;
 
         for (const stat of stats) {
             const p = document.createElement('p');
             p.textContent = stat.text;
             p.className = 'stat-item';
-            document.querySelector('.stats').append(p);
+            this.ui.elements.stats.append(p);
 
             await new Promise(resolve => setTimeout(resolve, animationDelay));
         }
 
-       document.querySelector('.button-txt-group').classList.add('fade-in');
+       this.ui.elements.btnGroup.classList.add('fade-in');
     }
 
     resetLives() {
@@ -261,7 +262,9 @@ class Game {
     resetGame() {
         this.resetLives();
         this.resetScores();
-        this.resetBoard()
+        this.resetBoard();
+        this.ui.elements.stats.replaceChildren();
+        this.ui.elements.btnGroup.classList.remove('fade-in');
     }
 
     clearScoreTable() {

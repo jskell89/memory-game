@@ -4,7 +4,6 @@ export class UIManager {
         this.elements = {
             overlay: document.querySelector('.overlay'),
             cardContainer: document.querySelector('.card-container'),
-            dialogBox: document.getElementById('dialog'),
             matches: document.getElementById('matches'),
             misses: document.getElementById('misses'),
             total: document.getElementById('total'),
@@ -18,7 +17,10 @@ export class UIManager {
             livesContainer: document.getElementById('lives'),
             startOverBtn: document.getElementById('startOver'),
             quiteBtn: document.getElementById('quit'),
+            //dialog box
             prompt: document.getElementById('prompt'),
+            stats: document.querySelector('.stats'),
+            btnGroup: document.querySelector('.button-txt-group'),
             promptYesBtn: document.getElementById('yesBtn'),
             promptNoBtn: document.getElementById('noBtn')
         }
