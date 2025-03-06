@@ -1,4 +1,9 @@
 node_modules/
+public/dist
+.DS_Store
+public/images/.DS_Store
+public/sounds/.DS_Store
+.env
 .vscode/
 # IntelliJ
 .idea/
