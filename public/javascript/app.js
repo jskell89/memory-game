@@ -87,7 +87,7 @@ class Game {
     flipCard(cardID) {
         const card = document.getElementById(cardID);
         card.classList.add('flipped');
-        this.audio.play('flip');
+        this.audio.flip.play();
 
         this.player.chosenCards.push(this.cardManager.getCard(cardID).img);
 
@@ -100,7 +100,7 @@ class Game {
         let cards = document.querySelectorAll('.card-inner');
 
         if (this.player.chosenCards[0] === this.player.chosenCards[1]) {
-            this.audio.play('match');
+            this.audio.match.play();
             this.player.matches += 1;
 
             cards.forEach(card => {
@@ -111,7 +111,7 @@ class Game {
             });
 
         } else {
-            this.audio.play('buzzer');
+            this.audio.buzzer.play();
             this.player.misses += 1;
 
             cards.forEach(card => {
@@ -133,7 +133,7 @@ class Game {
         // checking if the player got all the matches if so check if done in less turns than required to win, if so records score and displays message.
         if (this.player.matches === this.totalMatchesNeeded) {
             if (this.player.getTotalScore() <= this.totalCards) {
-                this.audio.play('cheering');
+                this.audio.cheering.play();
                 this.recordHighScore(this.player.getTotalScore()); // updates players highScores array and displays in table on front end.
 
                 if (this.player.getHighScores().length === 3) {
@@ -145,8 +145,8 @@ class Game {
         }
         // checking to see if it's possible to get all matches in less turns than number of cards in cardArray, if not calls endLife().
         if (this.player.getTotalScore() + remainingMatches > this.totalCards) {
-            this.audio.stop('match');
-            this.audio.play('booing');
+            this.audio.match.pause();
+            this.audio.booing.play();
             this.player.lives -= 1;
             this.endLife(); // removes life indicators and checks if 0 lives left if so calls gameOver().
 
@@ -208,15 +208,15 @@ class Game {
             origin: { y: 0.3 }
         });
         this.statAnimation();
-        this.audio.play('winner');
+        this.audio.winner.play();
         this.openPrompt();
     }
 
     gameOver() {
         this.ui.elements.cardContainer.style.color = "red";
         this.ui.elements.cardContainer.innerText = "Game Over!";
-        this.audio.stop('booing');
-        this.audio.play('youSuck');
+        this.audio.booing.pause();
+        this.audio.youSuck.play();
 
         setTimeout(this.openPrompt.bind(this), 3000);
     }
